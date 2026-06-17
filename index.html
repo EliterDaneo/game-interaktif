@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laravel Quest - Game Interaktif RPL SMK</title>
+    <!-- Tailwind CSS for modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for cute icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SheetJS to read/write Excel files -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- Canvas Confetti for winning celebrate effects -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .heading-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        /* Custom scrollbar for cool retro vibes */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e1b4b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4f46e5;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6366f1;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 text-slate-100 min-h-screen flex flex-col justify-between overflow-x-hidden selection:bg-indigo-500 selection:text-white">
+
+    <!-- Header Area -->
+    <header class="border-b border-indigo-900/50 bg-slate-950/60 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="changeScreen('role-screen')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-red-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                    <i class="fab fa-laravel text-white text-xl animate-pulse"></i>
+                </div>
+                <div>
+                    <h1 class="heading-font text-lg font-bold tracking-tight bg-gradient-to-r from-red-400 via-pink-400 to-indigo-400 bg-clip-text text-transparent">
+                        LARAVEL QUEST
+                    </h1>
+                    <p class="text-xs text-slate-400">RPL SMK Kelas XI Edition</p>
+                </div>
+            </div>
+
+            <!-- Global Actions -->
+            <div class="flex items-center space-x-3">
+                <button id="nav-guru-btn" onclick="openTeacherVerify()" class="px-3 py-1.5 rounded-lg bg-indigo-950 hover:bg-indigo-900 border border-indigo-800 text-xs font-semibold text-indigo-300 transition-all flex items-center gap-1.5">
+                    <i class="fas fa-chalkboard-teacher"></i> Menu Guru
+                </button>
+                <div class="hidden sm:flex items-center text-xs text-slate-400 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-800">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-ping"></span>
+                    Local Excel Engine Active
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex flex-col justify-center">
+
+        <!-- SCREEN 1: Role Selection & Welcome Screen -->
+        <section id="role-screen" class="screen-component max-w-2xl mx-auto w-full text-center space-y-8 py-6">
+            <div class="space-y-4">
+                <span class="px-4 py-1.5 rounded-full bg-indigo-900/40 text-indigo-300 border border-indigo-800/60 text-xs font-semibold uppercase tracking-wider">
+                    ⚡ Game Edukasi Interaktif
+                </span>
+                <h2 class="heading-font text-4xl sm:text-5xl font-extrabold tracking-tight leading-none text-white">
+                    Belajar Laravel Jadi <br><span class="bg-gradient-to-r from-indigo-400 via-pink-400 to-red-400 bg-clip-text text-transparent">Lebih Seru & Asyik!</span>
+                </h2>
+                <p class="text-slate-400 text-sm sm:text-base max-w-md mx-auto">
+                    Buktikan skill Laravel kamu, kumpulkan skor setinggi mungkin, dan bantu Pak Dev mendeploy aplikasinya ke production!
+                </p>
+            </div>
+
+            <!-- Character / Mascot Preview -->
+            <div class="relative w-48 h-48 mx-auto bg-gradient-to-b from-indigo-500/10 to-indigo-950/20 rounded-full border border-indigo-500/20 flex items-center justify-center shadow-inner">
+                <div class="absolute -inset-1 rounded-full bg-gradient-to-tr from-indigo-500/20 to-red-500/20 blur-xl opacity-75"></div>
+                <!-- Cute SVG Mascot Dev -->
+                <svg class="w-32 h-32 text-indigo-400 drop-shadow-lg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="40" r="22" fill="#312e81" stroke="#4f46e5" stroke-width="3"/>
+                    <path d="M50 24V18" stroke="#f43f5e" stroke-width="4" stroke-linecap="round"/>
+                    <circle cx="43" cy="38" r="3" fill="#818cf8"/>
+                    <circle cx="57" cy="38" r="3" fill="#818cf8"/>
+                    <path d="M45 48C45 48 48 52 50 52C52 52 55 48 55 48" stroke="#818cf8" stroke-width="3" stroke-linecap="round"/>
+                    <rect x="36" y="28" width="28" height="4" rx="2" fill="#ec4899"/>
+                    <!-- Hands coding -->
+                    <path d="M25 75C25 60 75 60 75 75V85H25V75Z" fill="#1e1b4b" stroke="#4f46e5" stroke-width="3"/>
+                    <rect x="42" y="65" width="16" height="12" rx="2" fill="#4f46e5"/>
+                    <circle cx="46" cy="71" r="1" fill="white"/>
+                    <circle cx="54" cy="71" r="1" fill="white"/>
+                </svg>
+            </div>
+
+            <!-- Setup Form -->
+            <div class="bg-slate-900/80 border border-slate-800 p-6 sm:p-8 rounded-2xl shadow-xl max-w-md mx-auto space-y-4">
+                <h3 class="heading-font text-lg font-bold text-left text-slate-200 border-b border-slate-800 pb-2">
+                    <i class="fas fa-user-astronaut text-indigo-400 mr-2"></i>Siap Tempur? Isi Data Dirimu
+                </h3>
+                <div class="space-y-3">
+                    <div class="text-left">
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Nama Lengkap Siswa</label>
+                        <input type="text" id="student-name" placeholder="Contoh: Budi Pratama" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white transition-all">
+                    </div>
+                    <div class="text-left">
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Kelas (Jurusan RPL)</label>
+                        <select id="student-class" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white transition-all">
+                            <option value="XI RPL 1">XI RPL 1</option>
+                            <option value="XI RPL 2">XI RPL 2</option>
+                            <option value="XI RPL 3">XI RPL 3</option>
+                            <option value="XI RPL 4">XI RPL 4</option>
+                            <option value="Lainnya">Lainnya / Guru</option>
+                        </select>
+                    </div>
+                </div>
+                <button onclick="startGame()" class="w-full py-4.5 bg-gradient-to-r from-red-500 via-purple-600 to-indigo-600 hover:from-red-600 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/35 transition-all text-sm uppercase tracking-wide flex items-center justify-center gap-2">
+                    Mulai Berpetualang <i class="fas fa-play"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- SCREEN 2: Active Gameplay Screen -->
+        <section id="game-screen" class="screen-component hidden max-w-3xl mx-auto w-full space-y-6 py-4">
+            
+            <!-- Game HUD / Status Bar -->
+            <div class="grid grid-cols-3 gap-3 bg-slate-950/80 p-4 rounded-xl border border-slate-800 text-center items-center">
+                <div class="text-left">
+                    <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Pemain</p>
+                    <p id="hud-player-name" class="text-xs sm:text-sm font-semibold truncate text-slate-200">Budi Pratama</p>
+                    <span id="hud-player-class" class="text-[10px] bg-indigo-900/50 text-indigo-300 px-1.5 py-0.5 rounded border border-indigo-800/40 font-mono">XI RPL 1</span>
+                </div>
+                <div>
+                    <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Level Quest</p>
+                    <div class="flex items-center justify-center gap-1">
+                        <span id="hud-current-level" class="heading-font text-base sm:text-lg font-bold text-indigo-400">1</span>
+                        <span class="text-slate-600">/</span>
+                        <span id="hud-total-level" class="text-xs font-semibold text-slate-400">5</span>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Skor Kamu</p>
+                    <p id="hud-score" class="heading-font text-base sm:text-lg font-bold text-amber-400">0 XP</p>
+                    <span id="hud-streak" class="hidden text-[9px] bg-red-950 text-red-400 border border-red-900/60 px-1.5 py-0.5 rounded font-bold uppercase tracking-widest animate-bounce">
+                        🔥 Streak x2
+                    </span>
+                </div>
+            </div>
+
+            <!-- Health Bar & Timer Alert -->
+            <div class="flex items-center justify-between gap-4 bg-slate-900/50 px-4 py-2.5 rounded-lg border border-slate-800/50 text-xs">
+                <div class="flex items-center gap-2">
+                    <span class="text-slate-400">Nyawa:</span>
+                    <div id="lives-container" class="flex items-center gap-1.5 text-red-500 text-sm">
+                        <i class="fas fa-heart"></i>
+                        <i class="fas fa-heart"></i>
+                        <i class="fas fa-heart"></i>
+                    </div>
+                </div>
+                <!-- Interactive Time Bar -->
+                <div class="flex-grow max-w-[150px] sm:max-w-xs bg-slate-950 h-2.5 rounded-full overflow-hidden border border-slate-800 relative">
+                    <div id="timer-progress-bar" class="bg-gradient-to-r from-red-500 to-emerald-500 h-full w-full transition-all duration-1000 ease-linear"></div>
+                </div>
+                <div class="font-mono text-slate-300 flex items-center gap-1">
+                    <i class="far fa-clock text-slate-400"></i>
+                    <span id="timer-text">20s</span>
+                </div>
+            </div>
+
+            <!-- Character Commentary Sandbox -->
+            <div class="bg-indigo-950/30 border border-indigo-900/40 p-4 rounded-xl flex items-center gap-4">
+                <div class="w-12 h-12 rounded-lg bg-indigo-900 flex-shrink-0 flex items-center justify-center border border-indigo-700">
+                    <span id="mascot-avatar" class="text-2xl">👨‍💻</span>
+                </div>
+                <div class="space-y-0.5">
+                    <p class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">Pak Dev (Asistenmu)</p>
+                    <p id="mascot-bubble" class="text-xs text-slate-300 italic">"Gunakan command console dengan baik, ayo kita deploy program ini!"</p>
+                </div>
+            </div>
+
+            <!-- The Active Question Card -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6 relative overflow-hidden">
+                <!-- Background visual design element -->
+                <div class="absolute top-0 right-0 p-3 bg-indigo-900/10 border-b border-l border-slate-800 text-xs font-mono text-slate-500 rounded-bl-xl select-none">
+                    Laravel v11_Quiz.sys
+                </div>
+
+                <!-- Quest Title / Hint -->
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2">
+                        <span id="quest-tag" class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 text-[10px] font-bold uppercase tracking-wider border border-emerald-900">
+                            PONDASI ROUTING
+                        </span>
+                    </div>
+                    <!-- Question text -->
+                    <h3 id="current-question-text" class="heading-font text-base sm:text-lg font-bold text-white leading-relaxed">
+                        Saat kita membuat proyek baru di Laravel, folder mana yang paling sering kita buka untuk mengatur rute (URL) dari halaman web kita?
+                    </h3>
+                </div>
+
+                <!-- Multiple Choice Options -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="options-grid">
+                    <!-- Standard options injected by JS -->
+                    <button class="option-btn p-4 rounded-xl text-left border border-slate-800 bg-slate-950 hover:bg-indigo-950/40 hover:border-indigo-800 text-xs sm:text-sm transition-all flex items-start gap-3 group relative">
+                        <span class="w-6 h-6 rounded-lg bg-slate-900 group-hover:bg-indigo-900 border border-slate-800 group-hover:border-indigo-600 flex items-center justify-center font-bold text-xs text-slate-400 group-hover:text-white transition-all flex-shrink-0">A</span>
+                        <span class="text-slate-300 group-hover:text-white pt-0.5">app/Http</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sound & Cheat controls -->
+            <div class="flex justify-between items-center text-xs text-slate-500 px-2">
+                <div>
+                    <button onclick="toggleAudio()" class="hover:text-slate-300 transition-all flex items-center gap-1.5">
+                        <i id="audio-icon" class="fas fa-volume-up"></i> Efek Suara
+                    </button>
+                </div>
+                <div class="flex gap-4">
+                    <button onclick="skipQuestion()" class="hover:text-slate-300 transition-all flex items-center gap-1">
+                        Skip Soal <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 3: Game Over & Score Achievement Screen -->
+        <section id="result-screen" class="screen-component hidden max-w-md mx-auto w-full space-y-6 text-center py-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden space-y-6">
+                <!-- Visual status -->
+                <div class="w-20 h-20 mx-auto rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-3xl shadow-lg shadow-emerald-500/5 animate-bounce">
+                    🎉
+                </div>
+
+                <div class="space-y-2">
+                    <h2 class="heading-font text-2xl font-extrabold text-white">Misi Quest Selesai!</h2>
+                    <p id="result-message" class="text-xs text-slate-400">Keren abis! Kamu berhasil mendeploy sistem Laravel dengan aman ke server production!</p>
+                </div>
+
+                <!-- Stat Cards -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800/80">
+                        <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider block mb-1">Skor Akhir</span>
+                        <span id="result-score" class="heading-font text-2xl font-black text-amber-400">0 XP</span>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800/80">
+                        <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider block mb-1">Benar / Total</span>
+                        <span id="result-accuracy" class="heading-font text-xl font-bold text-indigo-400">5 / 5</span>
+                    </div>
+                </div>
+
+                <!-- Custom feedback depending on score -->
+                <div id="badge-container" class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-left">
+                    <div class="flex gap-3 items-center">
+                        <div class="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-xl">
+                            🏆
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-200">Gelar: <span id="badge-title">Laravel Wizard</span></p>
+                            <p class="text-[10px] text-slate-400">Guru RPL bangga dengan pemahaman framework-mu!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="space-y-3">
+                    <button onclick="saveResultToDashboard()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-indigo-600 hover:from-emerald-600 hover:to-indigo-700 text-white text-xs font-bold rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+                        <i class="fas fa-cloud-upload-alt"></i> Kirim Nilai ke Rekap Guru
+                    </button>
+                    
+                    <button onclick="changeScreen('role-screen')" class="w-full py-3 bg-slate-950 border border-slate-800 hover:bg-slate-900 text-xs font-semibold rounded-xl text-slate-400 hover:text-white transition-all flex items-center justify-center gap-2">
+                        <i class="fas fa-redo"></i> Main Lagi
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 4: Teacher Dashboard (Excel Controls & Analytics) -->
+        <section id="teacher-screen" class="screen-component hidden max-w-6xl mx-auto w-full space-y-6 py-4">
+            
+            <!-- Dashboard Info Banner -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 p-6 rounded-2xl border border-indigo-900/40">
+                <div class="space-y-1">
+                    <span class="px-2.5 py-0.5 rounded bg-indigo-950 border border-indigo-800 text-[10px] text-indigo-300 font-bold uppercase tracking-wider">
+                        Akses Guru Resmi
+                    </span>
+                    <h2 class="heading-font text-2xl font-bold text-white">Dashboard Monitoring Siswa</h2>
+                    <p class="text-xs text-slate-400">Pantau rekapitulasi, rancang soal lewat Excel, dan lakukan download rekap nilai real-time.</p>
+                </div>
+                <!-- Action Buttons for Excel Integration -->
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="exportScoresToExcel()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-lg shadow-emerald-600/10">
+                        <i class="fas fa-file-excel"></i> Ekspor Semua Nilai (Excel)
+                    </button>
+                    <button onclick="downloadQuestionTemplate()" class="px-4 py-2 bg-slate-950 hover:bg-slate-900 border border-slate-800 text-slate-300 rounded-xl text-xs font-semibold transition-all flex items-center gap-2">
+                        <i class="fas fa-download"></i> Unduh Template Soal
+                    </button>
+                    <button onclick="changeScreen('role-screen')" class="px-4 py-2 bg-indigo-950 hover:bg-indigo-900 text-indigo-300 border border-indigo-800 rounded-xl text-xs font-semibold transition-all">
+                        <i class="fas fa-chevron-left mr-1"></i> Kembali ke Game
+                    </button>
+                </div>
+            </div>
+
+            <!-- Import Custom Question Zone -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Box Upload Soal Kustom -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <h3 class="heading-font text-sm font-bold text-slate-200">
+                        <i class="fas fa-upload text-indigo-400 mr-2"></i>Ganti Soal Kuis via Excel
+                    </h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Ingin membuat ujian kuis custom? Isi file Excel sesuai template, lalu unggah filenya di bawah ini untuk mengganti soal aktif game secara otomatis.
+                    </p>
+                    
+                    <!-- File input -->
+                    <div class="border-2 border-dashed border-indigo-900/60 hover:border-indigo-500 rounded-xl p-4 text-center cursor-pointer transition-all bg-slate-950 relative">
+                        <input type="file" id="upload-question-excel" accept=".xlsx, .xls" class="absolute inset-0 opacity-0 cursor-pointer" onchange="importQuestionsFromExcel(event)">
+                        <div class="space-y-2 pointer-events-none">
+                            <i class="fas fa-cloud-upload-alt text-2xl text-indigo-400"></i>
+                            <p class="text-xs font-semibold text-slate-300">Pilih / Drag File Excel (.xlsx)</p>
+                            <p class="text-[10px] text-slate-500">Maksimal 10MB</p>
+                        </div>
+                    </div>
+                    <div id="upload-status" class="hidden text-xs px-3 py-2 rounded"></div>
+                </div>
+
+                <!-- Stats summary panel -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 md:col-span-2 flex flex-col justify-between">
+                    <div>
+                        <h3 class="heading-font text-sm font-bold text-slate-200 mb-2">
+                            <i class="fas fa-chart-line text-indigo-400 mr-2"></i>Statistik Pembelajaran Kelas
+                        </h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2">
+                            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800/60 text-center">
+                                <span class="text-[10px] text-slate-500 font-bold block">TOTAL SISWA</span>
+                                <span id="stat-total-students" class="heading-font text-xl font-extrabold text-white">0</span>
+                            </div>
+                            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800/60 text-center">
+                                <span class="text-[10px] text-slate-500 font-bold block">RATA-RATA SKOR</span>
+                                <span id="stat-avg-score" class="heading-font text-xl font-extrabold text-amber-400">0</span>
+                            </div>
+                            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800/60 text-center">
+                                <span class="text-[10px] text-slate-500 font-bold block">SOAL AKTIF</span>
+                                <span id="stat-total-questions" class="heading-font text-xl font-extrabold text-indigo-400">5</span>
+                            </div>
+                            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800/60 text-center">
+                                <span class="text-[10px] text-slate-500 font-bold block">PERSENTASE LULUS</span>
+                                <span id="stat-pass-rate" class="heading-font text-xl font-extrabold text-emerald-400">0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-800 pt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                        <span class="text-xs text-slate-400">Butuh demo simulasi nilai siswa untuk uji coba ekspor Excel?</span>
+                        <button onclick="injectMockScores()" class="px-3 py-1.5 bg-indigo-900/30 hover:bg-indigo-900/50 text-indigo-300 border border-indigo-800 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1">
+                            <i class="fas fa-vial"></i> Inject 5 Data Demo Siswa
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Students Score Table -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl space-y-4 p-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <h3 class="heading-font text-base font-bold text-white flex items-center gap-2">
+                        <i class="fas fa-list-ol text-indigo-400"></i> Rekap Nilai Siswa Aktif
+                    </h3>
+                    <div class="flex items-center gap-2">
+                        <button onclick="clearScores()" class="px-3 py-1.5 bg-red-950 hover:bg-red-900 border border-red-900 text-red-400 rounded-lg text-[10px] font-bold transition-all">
+                            <i class="fas fa-trash-alt mr-1"></i> Bersihkan Semua Data
+                        </button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto border border-slate-800 rounded-xl bg-slate-950">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-800 bg-slate-950">
+                                <th class="p-4 text-[10px] font-bold uppercase tracking-wider text-slate-400">No</th>
+                                <th class="p-4 text-[10px] font-bold uppercase tracking-wider text-slate-400">Nama Siswa</th>
+                                <th class="p-4 text-[10px] font-bold uppercase tracking-wider text-slate-400">Kelas</th>
+                                <th class="p-4 text-[10px] font-bold uppercase tracking-wider text-slate-400">Skor (XP)</th>
+                                <th class="p-4 text-[10px] font-bold uppercase tracking-wider text-slate-400">Akurasi</th>
+                                <th class="p-4 text-[10px] font-bold uppercase tracking-wider text-slate-400">Waktu Selesai</th>
+                                <th class="p-4 text-[10px] font-bold uppercase tracking-wider text-slate-400 text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="student-scores-tbody" class="divide-y divide-slate-900 text-xs text-slate-300">
+                            <!-- Empty State loaded by default -->
+                            <tr>
+                                <td colspan="7" class="p-8 text-center text-slate-500">
+                                    <i class="fas fa-folder-open text-2xl mb-2 block text-slate-600"></i>
+                                    Belum ada siswa yang menyelesaikan kuis.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Teacher Password Gate Modal -->
+    <div id="teacher-gate-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/85 backdrop-blur-sm hidden">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl w-full max-w-sm shadow-2xl space-y-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-xl text-indigo-400">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div>
+                    <h3 class="heading-font text-base font-bold text-white">Verifikasi Guru RPL</h3>
+                    <p class="text-[10px] text-slate-400">Masukkan kode akses untuk masuk panel rekap</p>
+                </div>
+            </div>
+            <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                    <label class="block text-xs font-semibold text-slate-400">Kode Keamanan Guru</label>
+                </div>
+                <input type="password" id="teacher-access-code" onkeyup="if(event.key === 'Enter') verifyTeacherAccess()" placeholder="Masukkan kode akses..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500 text-white transition-all text-center">
+            </div>
+            <div id="gate-error" class="hidden text-red-400 text-xs text-center font-semibold">
+                Kode akses salah! Silakan coba lagi.
+            </div>
+            <div class="flex gap-2">
+                <button onclick="closeTeacherVerify()" class="w-1/2 py-2 bg-slate-950 border border-slate-800 hover:bg-slate-900 text-xs font-semibold text-slate-400 hover:text-white rounded-lg transition-all">
+                    Batal
+                </button>
+                <button onclick="verifyTeacherAccess()" class="w-1/2 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg transition-all">
+                    Akses Dashboard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert / Toast Modal -->
+    <div id="toast-notif" class="fixed bottom-6 right-6 z-[110] max-w-sm w-full bg-slate-900 border border-slate-800 p-4 rounded-xl shadow-2xl flex items-start gap-3 translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="w-8 h-8 rounded bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-sm text-indigo-400" id="toast-icon">
+            <i class="fas fa-info-circle"></i>
+        </div>
+        <div class="flex-grow space-y-0.5">
+            <p class="text-xs font-bold text-white" id="toast-title">Notifikasi</p>
+            <p class="text-[10px] text-slate-400 leading-tight" id="toast-message">Pesan notifikasi di sini.</p>
+        </div>
+    </div>
+
+    <!-- Footer Area -->
+    <footer class="border-t border-slate-900 bg-slate-950/60 py-6 text-center text-xs text-slate-500">
+        <p>&copy; 2026 Laravel Quest Game. Dibuat dengan <i class="fas fa-heart text-red-500"></i> untuk Guru & Siswa SMK Jurusan Rekayasa Perangkat Lunak.</p>
+        <p class="text-[10px] text-slate-600 mt-1">Menggunakan HTML5, Tailwind CSS, SheetJS, & Canvas Confetti</p>
+    </footer>
+
+    <script>
+        // Default Laravel Question Set
+        let defaultQuestions = [
+            {
+                No: 1,
+                Pertanyaan: "Saat kita membuat proyek baru di Laravel, folder mana yang paling sering kita buka untuk mengatur rute (URL) dari halaman web kita?",
+                Opsi_A: "app/Http",
+                Opsi_B: "config",
+                Opsi_C: "resources",
+                Opsi_D: "routes",
+                Jawaban_Benar: "D"
+            },
+            {
+                No: 2,
+                Pertanyaan: "Laravel punya alat keren berbasis Command Line Interface (CLI) untuk membuat controller, model, atau migrasi database secara otomatis. Apa nama alat penolong tersebut?",
+                Opsi_A: "Artisan",
+                Opsi_B: "Composer",
+                Opsi_C: "NPM",
+                Opsi_D: "Blade",
+                Jawaban_Benar: "A"
+            },
+            {
+                No: 3,
+                Pertanyaan: "Di Laravel, kita sering menulis kode HTML yang dikombinasikan dengan sintaks bawaan Laravel yang simpel (seperti @if atau @foreach). Apa nama templating engine resmi milik Laravel ini?",
+                Opsi_A: "Twig",
+                Opsi_B: "Blade",
+                Opsi_C: "Smarty",
+                Opsi_D: "Vue",
+                Jawaban_Benar: "B"
+            },
+            {
+                No: 4,
+                Pertanyaan: "Komponen dalam arsitektur MVC (Model-View-Controller) Laravel yang bertugas sebagai 'otak' untuk menjembatani permintaan user dan mengolah logika data adalah...",
+                Opsi_A: "Model",
+                Opsi_B: "View",
+                Opsi_C: "Controller",
+                Opsi_D: "Migration",
+                Jawaban_Benar: "C"
+            },
+            {
+                No: 5,
+                Pertanyaan: "Perintah Artisan apa yang harus kita jalan di terminal untuk membuat sebuah Controller baru bernama SiswaController?",
+                Opsi_A: "php artisan make:controller SiswaController",
+                Opsi_B: "php artisan create:controller SiswaController",
+                Opsi_C: "php artisan new:controller SiswaController",
+                Opsi_D: "php artisan generate:controller SiswaController",
+                Jawaban_Benar: "A"
+            }
+        ];
+
+        // Active State variables
+        let activeQuestions = JSON.parse(JSON.stringify(defaultQuestions));
+        let studentScores = []; // In-memory database of student scores
+        let currentLevel = 0; // Question Index (0 to total-1)
+        let totalScore = 0;
+        let consecutiveStreak = 0;
+        let livesLeft = 3;
+        let audioEnabled = true;
+        
+        // Timer settings
+        let timerSeconds = 20;
+        let timerInterval = null;
+        let originalTimeLimit = 20;
+
+        // User profiling
+        let currentStudentName = "";
+        let currentStudentClass = "";
+
+        // Audio synthesizer with Web Audio API for satisfying retro game sounds
+        let audioCtx = null;
+        function playTone(freq, duration, type = 'sine') {
+            if (!audioEnabled) return;
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (err) {
+                console.log("Audio not supported yet, waiting for user click.");
+            }
+        }
+
+        // Toast Notifier Helper
+        function showToast(title, message, iconType = "info") {
+            const toast = document.getElementById('toast-notif');
+            const tTitle = document.getElementById('toast-title');
+            const tMsg = document.getElementById('toast-message');
+            const tIcon = document.getElementById('toast-icon');
+
+            tTitle.textContent = title;
+            tMsg.textContent = message;
+
+            // Change icons dynamically
+            if (iconType === "success") {
+                tIcon.className = "w-8 h-8 rounded bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-sm text-emerald-400";
+                tIcon.innerHTML = `<i class="fas fa-check-circle"></i>`;
+            } else if (iconType === "error") {
+                tIcon.className = "w-8 h-8 rounded bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-sm text-rose-400";
+                tIcon.innerHTML = `<i class="fas fa-times-circle"></i>`;
+            } else {
+                tIcon.className = "w-8 h-8 rounded bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-sm text-indigo-400";
+                tIcon.innerHTML = `<i class="fas fa-info-circle"></i>`;
+            }
+
+            // Animate In
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            
+            // Hide after 3.5 seconds
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 3500);
+        }
+
+        // Screen switching controller
+        function changeScreen(screenId) {
+            // Hide all components
+            document.querySelectorAll('.screen-component').forEach(screen => {
+                screen.classList.add('hidden');
+            });
+            // Show requested screen
+            const target = document.getElementById(screenId);
+            if (target) {
+                target.classList.remove('hidden');
+            }
+            // Stop timers if leaving active gameplay
+            if (screenId !== 'game-screen') {
+                clearInterval(timerInterval);
+            }
+        }
+
+        // Audio controls
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            const audioIcon = document.getElementById('audio-icon');
+            if (audioEnabled) {
+                audioIcon.className = "fas fa-volume-up";
+                showToast("Audio Aktif", "Efek suara game dinyalakan!");
+                playTone(440, 0.1, 'sine');
+            } else {
+                audioIcon.className = "fas fa-volume-mute";
+                showToast("Audio Senyap", "Efek suara dimatikan.");
+            }
+        }
+
+        // Start Game initiation
+        function startGame() {
+            const nameInput = document.getElementById('student-name');
+            const classInput = document.getElementById('student-class');
+
+            if (!nameInput.value.trim()) {
+                showToast("Data Kurang Lengkap", "Nama tidak boleh kosong, ya! Isi nama kerenmu.", "error");
+                nameInput.focus();
+                return;
+            }
+
+            currentStudentName = nameInput.value.trim();
+            currentStudentClass = classInput.value;
+
+            // Reset scores & logic
+            currentLevel = 0;
+            totalScore = 0;
+            consecutiveStreak = 0;
+            livesLeft = 3;
+
+            // Set HUD profiling
+            document.getElementById('hud-player-name').textContent = currentStudentName;
+            document.getElementById('hud-player-class').textContent = currentStudentClass;
+            document.getElementById('hud-total-level').textContent = activeQuestions.length;
+
+            playTone(523.25, 0.15, 'sine'); // C5
+            setTimeout(() => playTone(659.25, 0.15, 'sine'), 100); // E5
+            setTimeout(() => playTone(783.99, 0.25, 'triangle'), 200); // G5
+
+            changeScreen('game-screen');
+            loadQuestion();
+        }
+
+        // Load specific level question
+        function loadQuestion() {
+            if (currentLevel >= activeQuestions.length) {
+                endGameSession();
+                return;
+            }
+
+            // Reset level components
+            const questionData = activeQuestions[currentLevel];
+            document.getElementById('hud-current-level').textContent = currentLevel + 1;
+            document.getElementById('hud-score').textContent = totalScore + " XP";
+            
+            // Adjust tagging categories
+            const tags = ["ROUTING", "ARTISAN CLI", "BLADE SYSTEM", "ARCHITECTURE", "DEPLOYMENT", "DATABASE", "CONTROLLER"];
+            const tagText = tags[currentLevel % tags.length];
+            document.getElementById('quest-tag').textContent = tagText;
+
+            // Update text questions
+            document.getElementById('current-question-text').textContent = questionData.Pertanyaan;
+
+            // Render live lives hearts
+            renderLives();
+
+            // Set up options in randomized grids or ordered standard grids
+            const optionsGrid = document.getElementById('options-grid');
+            optionsGrid.innerHTML = ''; // clear out
+
+            const options = [
+                { key: 'A', value: questionData.Opsi_A },
+                { key: 'B', value: questionData.Opsi_B },
+                { key: 'C', value: questionData.Opsi_C },
+                { key: 'D', value: questionData.Opsi_D }
+            ];
+
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn p-4 rounded-xl text-left border border-slate-800 bg-slate-950 hover:bg-indigo-950/40 hover:border-indigo-800 text-xs sm:text-sm transition-all flex items-start gap-3 group relative w-full";
+                btn.onclick = () => submitAnswer(opt.key);
+                btn.innerHTML = `
+                    <span class="w-6 h-6 rounded-lg bg-slate-900 group-hover:bg-indigo-900 border border-slate-800 group-hover:border-indigo-600 flex items-center justify-center font-bold text-xs text-slate-400 group-hover:text-white transition-all flex-shrink-0">${opt.key}</span>
+                    <span class="text-slate-300 group-hover:text-white pt-0.5">${opt.value}</span>
+                `;
+                optionsGrid.appendChild(btn);
+            });
+
+            // Adjust interactive mascot comment
+            const comments = [
+                "Pertanyaan ini sering banget masuk di ujian praktek kejuruan!",
+                "Yuk fokus, rute Laravel ini yang menyambungkan logika kita.",
+                "Mantap! Pahami polanya, jangan cuma dihafalkan ya.",
+                "Eits, hati-hati jebakan nama sintaksis di opsi jawaban!",
+                "Tinggal dikit lagi web sistem kita online!"
+            ];
+            document.getElementById('mascot-avatar').textContent = "👨‍💻";
+            document.getElementById('mascot-bubble').textContent = `"${comments[currentLevel % comments.length]}"`;
+
+            // Reset level Timer countdown
+            resetCountdownTimer();
+        }
+
+        // Render remaining user hearts/lives
+        function renderLives() {
+            const container = document.getElementById('lives-container');
+            container.innerHTML = '';
+            for (let i = 0; i < 3; i++) {
+                const heart = document.createElement('i');
+                if (i < livesLeft) {
+                    heart.className = "fas fa-heart text-red-500 animate-pulse";
+                } else {
+                    heart.className = "far fa-heart text-slate-700";
+                }
+                container.appendChild(heart);
+            }
+        }
+
+        // Countdown clock management
+        function resetCountdownTimer() {
+            clearInterval(timerInterval);
+            timerSeconds = originalTimeLimit;
+            updateTimerDisplay();
+
+            timerInterval = setInterval(() => {
+                timerSeconds--;
+                updateTimerDisplay();
+
+                if (timerSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const timerText = document.getElementById('timer-text');
+            const timerBar = document.getElementById('timer-progress-bar');
+            
+            timerText.textContent = timerSeconds + "s";
+            
+            // Calculate width percentage
+            const percentage = (timerSeconds / originalTimeLimit) * 100;
+            timerBar.style.width = percentage + "%";
+
+            // Modify coloring based on remaining seconds
+            if (timerSeconds <= 5) {
+                timerBar.className = "bg-gradient-to-r from-red-600 to-rose-500 h-full w-full transition-all duration-1000 ease-linear";
+                timerText.className = "text-rose-400 font-bold animate-pulse";
+                if (timerSeconds > 0) playTone(880, 0.05, 'square'); // urgent warning sound
+            } else if (timerSeconds <= 10) {
+                timerBar.className = "bg-gradient-to-r from-amber-500 to-red-500 h-full w-full transition-all duration-1000 ease-linear";
+                timerText.className = "text-amber-400";
+            } else {
+                timerBar.className = "bg-gradient-to-r from-emerald-500 to-indigo-500 h-full w-full transition-all duration-1000 ease-linear";
+                timerText.className = "text-slate-300";
+            }
+        }
+
+        // Timeout handler
+        function handleTimeout() {
+            consecutiveStreak = 0;
+            document.getElementById('hud-streak').classList.add('hidden');
+            livesLeft--;
+            playTone(220, 0.4, 'sawtooth'); // disappointing tone
+
+            document.getElementById('mascot-avatar').textContent = "😱";
+            document.getElementById('mascot-bubble').textContent = `"Aduh! Waktumu kehabisan untuk berpikir, ayo lebih fokus lagi!"`;
+
+            showToast("Waktu Habis!", "Waktu menjawab soal ini sudah habis.", "error");
+
+            if (livesLeft <= 0) {
+                endGameSession();
+            } else {
+                currentLevel++;
+                setTimeout(loadQuestion, 2000);
+            }
+        }
+
+        // Skip current Question option
+        function skipQuestion() {
+            showToast("Soal Diskip", "Kamu melewati rintangan soal ini.", "info");
+            currentLevel++;
+            loadQuestion();
+        }
+
+        // Evaluate submitted answer
+        function submitAnswer(chosenKey) {
+            clearInterval(timerInterval);
+            const questionData = activeQuestions[currentLevel];
+            const isCorrect = chosenKey.toUpperCase() === questionData.Jawaban_Benar.toUpperCase();
+
+            // Disable other buttons during visualization delay
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(btn => btn.disabled = true);
+
+            if (isCorrect) {
+                consecutiveStreak++;
+                let scoreGained = 100;
+                
+                // Add streak multiplier
+                if (consecutiveStreak >= 3) {
+                    scoreGained += 50;
+                    document.getElementById('hud-streak').classList.remove('hidden');
+                    document.getElementById('hud-streak').textContent = `🔥 Streak x${consecutiveStreak}`;
+                }
+
+                totalScore += scoreGained;
+                
+                // Success Audio
+                playTone(523.25, 0.1, 'sine');
+                setTimeout(() => playTone(659.25, 0.1, 'sine'), 80);
+                setTimeout(() => playTone(1046.50, 0.2, 'sine'), 160);
+
+                // Highlight chosen button as green
+                event.currentTarget.classList.add('bg-emerald-950/60', 'border-emerald-500', 'text-white');
+                event.currentTarget.querySelector('span').classList.add('bg-emerald-600', 'border-emerald-500', 'text-white');
+
+                document.getElementById('mascot-avatar').textContent = "😎";
+                document.getElementById('mascot-bubble').textContent = `"Wah gila, pinter banget! Sintaksmu valid, deploy lancar!"`;
+                showToast("Benar! +" + scoreGained + " XP", "Jawaban kamu terverifikasi sistem Laravel.", "success");
+            } else {
+                consecutiveStreak = 0;
+                document.getElementById('hud-streak').classList.add('hidden');
+                livesLeft--;
+
+                // Failure Audio
+                playTone(293.66, 0.15, 'sawtooth');
+                setTimeout(() => playTone(220, 0.3, 'sawtooth'), 120);
+
+                // Highlight chosen button as red, and show correct answer
+                event.currentTarget.classList.add('bg-rose-950/60', 'border-rose-500', 'text-white');
+                event.currentTarget.querySelector('span').classList.add('bg-rose-600', 'border-rose-500', 'text-white');
+
+                document.getElementById('mascot-avatar').textContent = "😰";
+                document.getElementById('mascot-bubble').textContent = `"Aduh, compile error! Kunci jawaban yang benar adalah opsi: ${questionData.Jawaban_Benar}"`;
+                showToast("Salah Jawaban!", "Yah, logika pemrosesanmu kurang tepat.", "error");
+            }
+
+            // Render live lives status
+            renderLives();
+
+            // Next question loading with elegant delays
+            setTimeout(() => {
+                if (livesLeft <= 0) {
+                    endGameSession();
+                } else {
+                    currentLevel++;
+                    loadQuestion();
+                }
+            }, 2500);
+        }
+
+        // Finish Game & compile scorecard
+        function endGameSession() {
+            clearInterval(timerInterval);
+            changeScreen('result-screen');
+
+            // Render detailed scores
+            document.getElementById('result-score').textContent = totalScore + " XP";
+            
+            // Count correct questions manually
+            let scoreMultiplier = 100;
+            let correctCount = Math.floor(totalScore / scoreMultiplier);
+            if (correctCount > activeQuestions.length) correctCount = activeQuestions.length;
+            if (livesLeft === 3 && correctCount === 0) correctCount = 0; // fallback if game quit
+            
+            document.getElementById('result-accuracy').textContent = `${correctCount} / ${activeQuestions.length}`;
+
+            const badgeTitle = document.getElementById('badge-title');
+            const resultMsg = document.getElementById('result-message');
+            
+            if (correctCount === activeQuestions.length) {
+                badgeTitle.textContent = "Laravel Core Architect 👑";
+                resultMsg.textContent = "Luar biasa sempurna! Kamu menguasai Framework Laravel setara Programmer Professional!";
+                triggerConfettiFireworks();
+            } else if (correctCount >= 3) {
+                badgeTitle.textContent = "Artisan Junior Dev 💻";
+                resultMsg.textContent = "Keren abis! Kompetensi dasar programming Laravel kamu sudah sangat mumpuni.";
+                triggerNormalConfetti();
+            } else {
+                badgeTitle.textContent = "Fresh PHP Apprentice 🌱";
+                resultMsg.textContent = "Masih ada eror logika, ayo banyak belajar mengulik MVC dan membaca dokumentasi Laravel!";
+            }
+        }
+
+        // Confetti visual effects
+        function triggerNormalConfetti() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+
+        // Giant Celebration Confetti
+        function triggerConfettiFireworks() {
+            var duration = 4 * 1000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 }
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 }
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+
+        // Push current player scorecard to in-memory array database
+        function saveResultToDashboard() {
+            let correctCount = Math.floor(totalScore / 100);
+            if (correctCount > activeQuestions.length) correctCount = activeQuestions.length;
+
+            const accuracyText = `${correctCount}/${activeQuestions.length}`;
+            const timeStamp = new Date().toLocaleString('id-ID');
+
+            // Prevent duplicate records for the same session
+            const isDuplicate = studentScores.some(s => s.Nama === currentStudentName && s.Skor === totalScore);
+            if (isDuplicate) {
+                showToast("Sudah Terkirim", "Nilai kamu sudah terekap sebelumnya di database guru.", "info");
+                return;
+            }
+
+            const record = {
+                No: studentScores.length + 1,
+                Nama: currentStudentName,
+                Kelas: currentStudentClass,
+                Skor: totalScore,
+                Akurasi: accuracyText,
+                Waktu: timeStamp,
+                Status: correctCount >= 3 ? "LULUS" : "REMIDI"
+            };
+
+            studentScores.push(record);
+            updateDashboardStats();
+            renderScoresTable();
+
+            playTone(880, 0.15, 'sine');
+            setTimeout(() => playTone(1046.50, 0.25, 'sine'), 100);
+            
+            showToast("Nilai Berhasil Dikirim!", "Data disimpan. Guru dapat mengunduhnya dalam Excel.", "success");
+        }
+
+        // Verify teacher secret password
+        function openTeacherVerify() {
+            // Reset input and clear errors
+            document.getElementById('teacher-access-code').value = '';
+            document.getElementById('gate-error').classList.add('hidden');
+            document.getElementById('teacher-gate-modal').classList.remove('hidden');
+            document.getElementById('teacher-access-code').focus();
+        }
+
+        function closeTeacherVerify() {
+            document.getElementById('teacher-gate-modal').classList.add('hidden');
+            document.getElementById('gate-error').classList.add('hidden');
+            document.getElementById('teacher-access-code').value = '';
+        }
+
+        function verifyTeacherAccess() {
+            const pass = document.getElementById('teacher-access-code').value;
+            if (pass.toLowerCase() === 'rplkeren') {
+                closeTeacherVerify();
+                updateDashboardStats();
+                renderScoresTable();
+                changeScreen('teacher-screen');
+                showToast("Selamat Datang, Guru!", "Menu administrasi & ekspor Excel siap digunakan.", "success");
+            } else {
+                document.getElementById('gate-error').classList.remove('hidden');
+                playTone(180, 0.3, 'sawtooth');
+            }
+        }
+
+        // Inject Mock/Demo Student Score Data for simple demo evaluation
+        function injectMockScores() {
+            const mockData = [
+                { No: studentScores.length + 1, Nama: "Andi Wijaya", Kelas: "XI RPL 1", Skor: 500, Akurasi: "5/5", Waktu: new Date().toLocaleString('id-ID'), Status: "LULUS" },
+                { No: studentScores.length + 2, Nama: "Siti Rahmawati", Kelas: "XI RPL 2", Skor: 400, Akurasi: "4/5", Waktu: new Date().toLocaleString('id-ID'), Status: "LULUS" },
+                { No: studentScores.length + 3, Nama: "Rian Hidayat", Kelas: "XI RPL 1", Skor: 200, Akurasi: "2/5", Waktu: new Date().toLocaleString('id-ID'), Status: "REMIDI" },
+                { No: studentScores.length + 4, Nama: "Dewi Lestari", Kelas: "XI RPL 3", Skor: 350, Akurasi: "3/5", Waktu: new Date().toLocaleString('id-ID'), Status: "LULUS" },
+                { No: studentScores.length + 5, Nama: "Fajar Pratama", Kelas: "XI RPL 2", Skor: 100, Akurasi: "1/5", Waktu: new Date().toLocaleString('id-ID'), Status: "REMIDI" }
+            ];
+
+            studentScores = studentScores.concat(mockData);
+            // Re-index
+            studentScores.forEach((item, idx) => item.No = idx + 1);
+
+            updateDashboardStats();
+            renderScoresTable();
+            showToast("Data Demo Dimasukkan", "Berhasil menyimulasikan 5 nilai siswa ke tabel.", "success");
+        }
+
+        // Reset and clear scores
+        function clearScores() {
+            studentScores = [];
+            updateDashboardStats();
+            renderScoresTable();
+            showToast("Data Dihapus", "Rekapitulasi database nilai berhasil dibersihkan.", "info");
+        }
+
+        // Calculate and display statistics
+        function updateDashboardStats() {
+            const totalStudents = studentScores.length;
+            document.getElementById('stat-total-students').textContent = totalStudents;
+            document.getElementById('stat-total-questions').textContent = activeQuestions.length;
+
+            if (totalStudents > 0) {
+                const totalXP = studentScores.reduce((sum, s) => sum + s.Skor, 0);
+                const avg = Math.round(totalXP / totalStudents);
+                document.getElementById('stat-avg-score').textContent = avg + " XP";
+
+                const lulusCount = studentScores.filter(s => s.Status === "LULUS").length;
+                const rate = Math.round((lulusCount / totalStudents) * 100);
+                document.getElementById('stat-pass-rate').textContent = rate + "%";
+            } else {
+                document.getElementById('stat-avg-score').textContent = "0";
+                document.getElementById('stat-pass-rate').textContent = "0%";
+            }
+        }
+
+        // Render dashboard HTML elements
+        function renderScoresTable() {
+            const tbody = document.getElementById('student-scores-tbody');
+            tbody.innerHTML = '';
+
+            if (studentScores.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="p-8 text-center text-slate-500">
+                            <i class="fas fa-folder-open text-2xl mb-2 block text-slate-600"></i>
+                            Belum ada siswa yang menyelesaikan kuis.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            studentScores.forEach(score => {
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-slate-900/60 hover:bg-slate-900/40 transition-colors";
+                
+                const badgeClass = score.Status === "LULUS" 
+                    ? "bg-emerald-950/50 text-emerald-400 border border-emerald-900/40" 
+                    : "bg-rose-950/50 text-rose-400 border border-rose-900/40";
+
+                tr.innerHTML = `
+                    <td class="p-4 text-slate-500 font-mono">${score.No}</td>
+                    <td class="p-4 font-semibold text-slate-100">${score.Nama}</td>
+                    <td class="p-4">${score.Kelas}</td>
+                    <td class="p-4 font-bold text-amber-400">${score.Skor} XP</td>
+                    <td class="p-4 font-mono">${score.Akurasi}</td>
+                    <td class="p-4 text-slate-400 text-[10px]">${score.Waktu}</td>
+                    <td class="p-4 text-center">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold ${badgeClass}">
+                            ${score.Status}
+                        </span>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Export score tables into native formatted Excel (.xlsx) file
+        function exportScoresToExcel() {
+            if (studentScores.length === 0) {
+                showToast("Gagal Ekspor", "Data siswa masih kosong. Selesaikan kuis atau buat demo nilai dahulu.", "error");
+                return;
+            }
+
+            try {
+                // Map local data into clean Excel column headers
+                const excelRows = studentScores.map(row => ({
+                    "No Urut": row.No,
+                    "Nama Siswa": row.Nama,
+                    "Kelas / Jurusan": row.Kelas,
+                    "Skor Perolehan (XP)": row.Skor,
+                    "Akurasi Jawaban": row.Akurasi,
+                    "Tanggal Selesai": row.Waktu,
+                    "Status Kelulusan": row.Status
+                }));
+
+                // Initialize SheetJS components
+                const worksheet = XLSX.utils.json_to_sheet(excelRows);
+                const workbook = XLSX.utils.book_new();
+
+                // Style sheet formatting widths
+                const columnWidths = [
+                    { wch: 10 }, // No
+                    { wch: 30 }, // Nama
+                    { wch: 20 }, // Kelas
+                    { wch: 22 }, // Skor
+                    { wch: 18 }, // Akurasi
+                    { wch: 25 }, // Tanggal
+                    { wch: 18 }  // Status
+                ];
+                worksheet['!cols'] = columnWidths;
+
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Rekap Nilai Laravel");
+
+                // Save file directly on computer/tablet browser sandbox
+                XLSX.writeFile(workbook, "Rekap_Nilai_LaravelQuest_SMK_RPL.xlsx");
+                
+                showToast("Unduhan Berhasil!", "File Excel 'Rekap_Nilai_LaravelQuest_SMK_RPL.xlsx' berhasil diekspor.", "success");
+            } catch (err) {
+                console.error(err);
+                showToast("Eror Ekspor", "Terjadi masalah saat menulis file Excel.", "error");
+            }
+        }
+
+        // Generate and download a blank structured template for questions
+        function downloadQuestionTemplate() {
+            try {
+                // Convert current question set into clean template format
+                const templateRows = activeQuestions.map(q => ({
+                    "No": q.No,
+                    "Pertanyaan": q.Pertanyaan,
+                    "Opsi_A": q.Opsi_A,
+                    "Opsi_B": q.Opsi_B,
+                    "Opsi_C": q.Opsi_C,
+                    "Opsi_D": q.Opsi_D,
+                    "Jawaban_Benar": q.Jawaban_Benar
+                }));
+
+                const worksheet = XLSX.utils.json_to_sheet(templateRows);
+                const workbook = XLSX.utils.book_new();
+
+                // Column scaling
+                worksheet['!cols'] = [
+                    { wch: 8 },   // No
+                    { wch: 60 },  // Pertanyaan
+                    { wch: 25 },  // A
+                    { wch: 25 },  // B
+                    { wch: 25 },  // C
+                    { wch: 25 },  // D
+                    { wch: 18 }   // Jawaban (A/B/C/D)
+                ];
+
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Template Soal Kuis");
+                XLSX.writeFile(workbook, "Template_Soal_LaravelQuest.xlsx");
+
+                showToast("Template Diunduh!", "Ubah template ini lalu upload kembali di dashboard guru.", "success");
+            } catch (err) {
+                console.error(err);
+                showToast("Gagal Unduh Template", "Terjadi error internal saat membuat workbook.", "error");
+            }
+        }
+
+        // Import customised questions from excel upload input
+        function importQuestionsFromExcel(event) {
+            const file = event.target.files[0];
+            const statusDiv = document.getElementById('upload-status');
+            
+            if (!file) return;
+
+            statusDiv.className = "text-xs px-3 py-2 rounded bg-indigo-950/60 text-indigo-300 border border-indigo-900";
+            statusDiv.innerHTML = `<i class="fas fa-spinner animate-spin mr-1"></i> Membaca file Excel...`;
+            statusDiv.classList.remove('hidden');
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    
+                    // Pick the very first sheet
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    
+                    // Convert rows to JSON
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+                    // Perform strict structural validation check
+                    if (jsonData.length === 0) {
+                        throw new Error("File Excel kosong / tidak memiliki baris data.");
+                    }
+
+                    const requiredKeys = ["No", "Pertanyaan", "Opsi_A", "Opsi_B", "Opsi_C", "Opsi_D", "Jawaban_Benar"];
+                    const sample = jsonData[0];
+                    const hasAllKeys = requiredKeys.every(k => Object.keys(sample).includes(k));
+
+                    if (!hasAllKeys) {
+                        throw new Error("Struktur kolom Excel tidak valid! Pastikan kolom sama dengan template (No, Pertanyaan, Opsi_A, Opsi_B, Opsi_C, Opsi_D, Jawaban_Benar).");
+                    }
+
+                    // Format parsed JSON as our active questions list
+                    activeQuestions = jsonData.map((row, index) => ({
+                        No: parseInt(row.No) || (index + 1),
+                        Pertanyaan: String(row.Pertanyaan),
+                        Opsi_A: String(row.Opsi_A),
+                        Opsi_B: String(row.Opsi_B),
+                        Opsi_C: String(row.Opsi_C),
+                        Opsi_D: String(row.Opsi_D),
+                        Jawaban_Benar: String(row.Jawaban_Benar).toUpperCase().trim()
+                    }));
+
+                    statusDiv.className = "text-xs px-3 py-2 rounded bg-emerald-950/60 text-emerald-400 border border-emerald-900";
+                    statusDiv.innerHTML = `<i class="fas fa-check-circle mr-1"></i> Sukses mengimpor ${activeQuestions.length} soal baru!`;
+                    
+                    showToast("Soal Kustom Aktif!", `Berhasil memuat ${activeQuestions.length} soal kustom dari Excel.`, "success");
+                    updateDashboardStats();
+
+                } catch (error) {
+                    console.error(error);
+                    statusDiv.className = "text-xs px-3 py-2 rounded bg-rose-950/60 text-rose-400 border border-rose-900";
+                    statusDiv.innerHTML = `<i class="fas fa-exclamation-triangle mr-1"></i> Gagal: ${error.message}`;
+                    showToast("Gagal Impor Excel", error.message, "error");
+                }
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+        // Initialize App on load
+        window.onload = function() {
+            // Standard greeting audio triggers when interface is tapped
+            document.body.addEventListener('click', function initAudio() {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                document.body.removeEventListener('click', initAudio);
+            });
+        };
+    </script>
+</body>
+</html>
